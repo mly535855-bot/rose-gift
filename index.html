@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Celestial Universe For You ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Great+Vibes&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           1. CSS CONFIGURATION & ROOT VARIABLES (Extended Design System)
+           ========================================================================== */
+        :root {
+            --bg-deep: #020205;
+            --bg-surface: #0a0a16;
+            --primary-rose: #ff2a5f;
+            --secondary-rose: #ff6584;
+            --accent-gold: #f39c12;
+            --text-main: #f1f2f6;
+            --text-muted: #a4b0be;
+            --glow-strong: rgba(255, 42, 95, 0.6);
+            --glow-subtle: rgba(255, 42, 95, 0.2);
+            --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* ==========================================================================
+           2. GLOBAL RESET & BASE STYLES
+           ========================================================================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* ==========================================================================
+           3. ADVANCED CANVAS & PARTICLE LAYERS
+           ========================================================================== */
+        #universe-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        #interactive-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* ==========================================================================
+           4. IMMERSIVE WELCOME OVERLAY (Cinematic Intro)
+           ========================================================================== */
+        #welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #101026 0%, #020205 100%);
+            backdrop-filter: blur(25px);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.8s;
+        }
+
+        .welcome-card {
+            text-align: center;
+            padding: 3rem;
+            max-width: 650px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 30px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 42, 95, 0.1);
+            animation: cardFloat 6s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 42, 95, 0.05), transparent);
+            transform: rotate(45deg);
+            animation: lightSweep 8s linear infinite;
+        }
+
+        .welcome-title {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            background: linear-gradient(135deg, #fff 30%, var(--secondary-rose));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 35px rgba(255, 42, 95, 0.4);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .enter-btn {
+            background: linear-gradient(135deg, var(--primary-rose), var(--secondary-rose));
+            border: none;
+            color: white;
+            padding: 20px 50px;
+            font-size: 1.25rem;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px var(--glow-strong);
+            transition: var(--transition-smooth);
+            position: relative;
+            z-index: 2;
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 45px rgba(255, 42, 95, 0.9);
+        }
+
+        /* ==========================================================================
+           5. MAIN APPLICATION CONTAINER & UI ARCHITECTURE
+           ========================================================================== */
+        .app-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1100px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(30px);
+            transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s;
+        }
+
+        .app-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* ==========================================================================
+           6. ASCII ROSE COMPONENT (Artistic Breathing Display)
+           ========================================================================== */
+        .rose-display-panel {
+            background: rgba(10, 10, 22, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        pre.ascii-artwork {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 9.5px;
+            line-height: 9.5px;
+            color: var(--primary-rose);
+            text-shadow: 0 0 15px var(--glow-strong);
+            animation: roseBreathing 6s ease-in-out infinite;
+            white-space: pre;
+            text-align: center;
+        }
+
+        /* ==========================================================================
+           7. INTERACTIVE LOVE LETTER & TYPEWRITER SYSTEM
+           ========================================================================== */
+        .letter-interface {
+            background: rgba(15, 15, 30, 0.75);
+            border: 1px solid rgba(255, 42, 95, 0.2);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 850px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        .letter-body {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            line-height: 2.2;
+            color: #dfe4ea;
+            min-height: 220px;
+            white-space: pre-wrap;
+            font-weight: 300;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 10px;
+            height: 22px;
+            background-color: var(--primary-rose);
+            margin-left: 6px;
+            vertical-align: middle;
+            animation: cursorBlink 0.8s infinite;
+        }
+
+        /* ==========================================================================
+           8. CONTROLS & INTERACTIVE TOOLBAR
+           ========================================================================== */
+        .toolbar-actions {
+            margin-top: 2rem;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .control-chip {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 42, 95, 0.3);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: var(--transition-smooth);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-chip:hover {
+            background: var(--primary-rose);
+            border-color: var(--primary-rose);
+            box-shadow: 0 0 25px var(--glow-strong);
+            transform: translateY(-2px);
+        }
+
+        /* ==========================================================================
+           9. KEYFRAME ANIMATIONS & DYNAMIC FX
+           ========================================================================== */
+        @keyframes roseBreathing {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 12px rgba(255, 42, 95, 0.4));
+            }
+            50% {
+                transform: scale(1.04);
+                filter: drop-shadow(0 0 30px rgba(255, 42, 95, 0.85));
+            }
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes lightSweep {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Space Canvas Layers -->
+    <canvas id="universe-canvas"></canvas>
+    <canvas id="interactive-particles"></canvas>
+
+    <!-- Background Audio Engine (Local MP3 Integration) -->
+    <audio id="background-audio" loop>
+        <source src="song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Cinematic Welcome Screen -->
+    <div id="welcome-overlay">
+        <div class="welcome-card">
+            <h1 class="welcome-title">A Universe For You</h1>
+            <p class="welcome-subtitle">A digital masterpiece crafted with infinite care and love...</p>
+            <button class="enter-btn" onclick="initializeExperience()">Open Your Gift ❤️</button>
+        </div>
+    </div>
+
+    <!-- Main Interactive SPA Experience -->
+    <div class="app-container" id="main-application">
+        <div class="rose-display-panel">
+            <pre class="ascii-artwork">
+            ,@@@@@@@,
+    ,,    ,@@@@@@@@@@@@(    ,,
+  @@@@@@, @@@@@@@@@@@@@@, @@@@@@
+   @@@@@@@@@@@@@@@@@@@@@@@@@@@@
+     @@@@@@@@@@@@@@@@@@@@@@@@@@
+       `@@@@@@@@@@@@@@@@@@@@'
+          `@@@@@@@@@@@@@@@@'
+             `@@@@@@@@@@'
+                @@@@@@
+                @@@@@@
+                @@@@@@
+                @@@@@@
+             __ |||||| __
+            (############)
+            </pre>
+        </div>
+
+        <div class="letter-interface">
+            <div class="letter-body" id="typewriter-target"></div><span class="typing-cursor" id="cursor-element"></span>
+            
+            <div class="toolbar-actions">
+                <button class="control-chip" onclick="restartTypewriter()">Replay Message ✍️</button>
+                <button class="control-chip" onclick="toggleAudioPlayback()">Toggle Music 🎵</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       10. ADVANCED JAVASCRIPT ENGINE & EVENT CONTROLLERS
+       ========================================================================== -->
+    <script>
+        // --- Universe Canvas Starry Background System ---
+        const universeCanvas = document.getElementById('universe-canvas');
+        const uCtx = universeCanvas.getContext('2d');
+        let starfield = [];
+
+        function resizeUniverse() {
+            universeCanvas.width = window.innerWidth;
+            universeCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeUniverse);
+        resizeUniverse();
+
+        for (let i = 0; i < 250; i++) {
+            starfield.push({
+                x: Math.random() * universeCanvas.width,
+                y: Math.random() * universeCanvas.height,
+                radius: Math.random() * 1.6,
+                alpha: Math.random(),
+                velocity: Math.random() * 0.025 + 0.005
+            });
+        }
+
+        function renderUniverse() {
+            uCtx.clearRect(0, 0, universeCanvas.width, universeCanvas.height);
+            uCtx.fillStyle = '#ffffff';
+            starfield.forEach(star => {
+                uCtx.globalAlpha = star.alpha;
+                uCtx.beginPath();
+                uCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                uCtx.fill();
+                star.alpha += star.velocity;
+                if (star.alpha > 1 || star.alpha < 0) star.velocity = -star.velocity;
+            });
+            requestAnimationFrame(renderUniverse);
+        }
+        renderUniverse();
+
+        // --- Interactive Particle Click System ---
+        const pCanvas = document.getElementById('interactive-particles');
+        const pCtx = pCanvas.getContext('2d');
+        let dynamicParticles = [];
+
+        function resizeParticles() {
+            pCanvas.width = window.innerWidth;
+            pCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeParticles);
+        resizeParticles();
+
+        window.addEventListener('click', (e) => {
+            for (let i = 0; i < 15; i++) {
+                dynamicParticles.push({
+                    x: e.clientX,
+                    y: e.clientY,
+                    size: Math.random() * 4 + 1,
+                    speedX: (Math.random() - 0.5) * 5,
+                    speedY: (Math.random() - 0.5) * 5,
+                    life: 1,
+                    decay: Math.random() * 0.02 + 0.01
+                });
+            }
+        });
+
+        function renderParticles() {
+            pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+            dynamicParticles.forEach((p, index) => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+                p.life -= p.decay;
+                pCtx.fillStyle = `rgba(255, 42, 95, ${p.life})`;
+                pCtx.beginPath();
+                pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                pCtx.fill();
+                if (p.life <= 0) dynamicParticles.splice(index, 1);
+            });
+            requestAnimationFrame(renderParticles);
+        }
+        renderParticles();
+
+        // --- Typewriter Letter Controller ---
+        const letterContent = "My dearest love,\n\nIn an infinite universe filled with countless glowing stars, you remain my absolute favorite light. Every single moment shared with you feels like poetry written across the cosmos. I built this entire digital universe from scratch just to remind you how deeply cherished and adored you are, today and for all eternity.\n\nYours forever, ❤️";
+        
+        let currentIndex = 0;
+        let typingActive = false;
+
+        function executeTypewriter() {
+            if (currentIndex < letterContent.length) {
+                document.getElementById("typewriter-target").textContent += letterContent.charAt(currentIndex);
+                currentIndex++;
+                setTimeout(executeTypewriter, 40);
+            } else {
+                document.getElementById("cursor-element").style.display = 'none';
+            }
+        }
+
+        // --- Experience Initializer & Audio Manager ---
+        function initializeExperience() {
+            const backgroundAudio = document.getElementById('background-audio');
+            backgroundAudio.play().catch(err => console.log("Audio playback waiting for gesture"));
+
+            const overlayElement = document.getElementById('welcome-overlay');
+            overlayElement.style.opacity = '0';
+            setTimeout(() => {
+                overlayElement.style.display = 'none';
+                document.getElementById('main-application').classList.add('app-visible');
+                executeTypewriter();
+            }, 1500);
+        }
+
+        function restartTypewriter() {
+            document.getElementById("typewriter-target").textContent = "";
+            document.getElementById("cursor-element").style.display = 'inline-block';
+            currentIndex = 0;
+            executeTypewriter();
+        }
+
+        let isMusicPlaying = true;
+        function toggleAudioPlayback() {
+            const backgroundAudio = document.getElementById('background-audio');
+            if (isMusicPlaying) {
+                backgroundAudio.pause();
+                isMusicPlaying = false;
+            } else {
+                backgroundAudio.play();
+                isMusicPlaying = true;
+            }
+        }
+    </script>
+</body>
+</html>
